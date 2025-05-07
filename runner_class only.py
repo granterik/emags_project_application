@@ -5,11 +5,12 @@ from random import randint, choice
 class Player(pygame.sprite.Sprite):
 	def __init__(self):
 		super().__init__()
-		player_walk_1 = pygame.image.load('graphics/player/player_walk_1.png').convert_alpha()
-		player_walk_2 = pygame.image.load('graphics/player/player_walk_2.png').convert_alpha()
-		self.player_walk = [player_walk_1,player_walk_2]
+		player_walk_1 = pygame.transform.scale_by(pygame.image.load('assets/player/player_frame1.png').convert_alpha(),0.2)
+		player_walk_2 = pygame.transform.scale_by(pygame.image.load('assets/player/player_frame2.png').convert_alpha(),0.2)
+		player_walk_3 = pygame.transform.scale_by(pygame.image.load('assets/player/player_frame3.png').convert_alpha(),0.2)
+		self.player_walk = [player_walk_1,player_walk_2,player_walk_3]
 		self.player_index = 0
-		self.player_jump = pygame.image.load('graphics/player/jump.png').convert_alpha()
+		self.player_jump = pygame.transform.scale_by(pygame.image.load('assets/player/player_jump_frame1.png').convert_alpha(),0.2)
 
 		self.image = self.player_walk[self.player_index]
 		self.rect = self.image.get_rect(midbottom = (200,535))
@@ -47,6 +48,36 @@ class Obstacle(pygame.sprite.Sprite):
 	def __init__(self,type):
 		super().__init__()
 		
+		if type == 'coil_long':
+			coil_long_1 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/coil_long_frame1.png').convert_alpha(),0.2)
+			coil_long_2 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/coil_long_frame2.png').convert_alpha(),0.2)
+			self.frames = [coil_long_1,coil_long_2]
+			y_pos = 300
+		if type == 'coil_short':
+			coil_short_1 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/coil_short_frame1.png').convert_alpha(),0.2)
+			coil_short_2 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/coil_short_frame2.png').convert_alpha(),0.2)
+			self.frames = [coil_short_1,coil_short_2]
+			y_pos = 300
+		if type == 'openswitch':
+			openswitch_1 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/openswitch_frame1.png').convert_alpha(),0.2)
+			openswitch_2 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/openswitch_frame2.png').convert_alpha(),0.2)
+			self.frames = [openswitch_1,openswitch_2]
+			y_pos = 300
+		if type == 'resistor':
+			resistor_1 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/resistor_frame1.png').convert_alpha(),0.2)
+			resistor_2 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/resistor_frame2.png').convert_alpha(),0.2)
+			self.frames = [resistor_1,resistor_2]
+			y_pos = 300
+		if type == 'transformer_up':
+			transformer_up_1 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/transformer_up_frame1.png').convert_alpha(),0.2)
+			transformer_up_2 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/transformer_up_frame2.png').convert_alpha(),0.2)
+			self.frames = [transformer_up_1,transformer_up_2]
+			y_pos = 300
+		if type == 'transformer_down':
+			transformer_down_1 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/transformer_down_frame1.png').convert_alpha(),0.2)
+			transformer_down_2 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/transformer_down_frame2.png').convert_alpha(),0.2)
+			self.frames= [transformer_down_1,transformer_down_2]
+			y_pos = 300
 		if type == 'fluxflip_vertical':
 			fluxflip_vertical_1 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/fluxflip_vertical_frame1.png').convert_alpha(),0.2)
 			fluxflip_vertical_2 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/fluxflip_vertical_frame2.png').convert_alpha(),0.2)
@@ -67,9 +98,9 @@ class Obstacle(pygame.sprite.Sprite):
 			signswitcher_2 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/signswitcher_frame2.png').convert_alpha(),0.2)
 			self.frames = [signswitcher_1,signswitcher_2]
 			y_pos = 350
-		else:
-			stick_1 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/stick_frame1.png').convert_alpha(),0.2)
-			stick_2 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/stick_frame2.png').convert_alpha(),0.2)
+		if type == 'stick':
+			stick_1 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/stick_frame1.png').convert_alpha(),0.1)
+			stick_2 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/stick_frame2.png').convert_alpha(),0.1)
 			self.frames = [stick_1,stick_2]
 			y_pos = 500
 
@@ -150,7 +181,7 @@ while True:
 
 		if game_active:
 			if event.type == obstacle_timer:
-				obstacle_group.add(Obstacle(choice(['fluxflip_vertical','fluxflip_horizontal','roundabout','signswitcher','stick'])))
+				obstacle_group.add(Obstacle(choice(['coil_long','coil_short','openswitch','resistor','transformer_up','transformer_down','fluxflip_vertical','fluxflip_horizontal','roundabout','signswitcher','stick'])))
 		
 		else:
 			if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
