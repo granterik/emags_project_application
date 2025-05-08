@@ -179,9 +179,6 @@ fire_background_scaled = pygame.transform.scale(fire_background, (screen_width, 
 ice_background_scaled = pygame.transform.scale(ice_background,(screen_width,screen_height))
 
 # Intro screen
-player_stand = pygame.image.load('graphics/player/player_stand.png').convert_alpha()
-player_stand = pygame.transform.rotozoom(player_stand,0,2)
-player_stand_rect = player_stand.get_rect(center = (400,200))
 
 # Timer 
 obstacle_timer = pygame.USEREVENT + 1
@@ -279,7 +276,7 @@ while True:
 
 	else:
 		screen.fill((94,129,162))
-		screen.blit(player_stand,player_stand_rect)
+		
 
 		#score_message = test_font.render(f'Your score: {score}',False,(111,196,169))
 		#score_message_rect = score_message.get_rect(center = (400,330))
