@@ -1,6 +1,6 @@
 import pygame
 from sys import exit
-from random import randint, choice
+from random import randint, choices
 
 class Player(pygame.sprite.Sprite):
 	def __init__(self):
@@ -47,6 +47,7 @@ class Player(pygame.sprite.Sprite):
 class Obstacle(pygame.sprite.Sprite):
 	def __init__(self,type):
 		super().__init__()
+		self.type = type
 		
 		if type == 'coil_long':
 			coil_long_1 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/coil_long_frame1.png').convert_alpha(),0.2)
@@ -103,6 +104,10 @@ class Obstacle(pygame.sprite.Sprite):
 			stick_2 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/stick_frame2.png').convert_alpha(),0.1)
 			self.frames = [stick_1,stick_2]
 			y_pos = 500
+		if type == 'portal':
+			portal_1 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/portal.png').convert_alpha(),0.2)
+			self.frames = [portal_1]
+			y_pos = 300
 
 		self.animation_index = 0
 		self.image = self.frames[self.animation_index]
@@ -122,6 +127,7 @@ class Obstacle(pygame.sprite.Sprite):
 		if self.rect.x <= -100: 
 			self.kill()
 
+
 def display_score():
 	current_time = int(pygame.time.get_ticks() / 1000) - start_time
 	#score_surf = test_font.render(f'Score: {current_time}',False,(64,64,64))
@@ -130,10 +136,10 @@ def display_score():
 	return current_time
 
 def collision_sprite():
-	if pygame.sprite.spritecollide(player.sprite,obstacle_group,False):
-		obstacle_group.empty()
-		return False
-	else: return True
+    collided_obstacle = pygame.sprite.spritecollideany(player.sprite, obstacle_group)
+    if collided_obstacle:
+        return collided_obstacle
+    return None
 
 
 pygame.init()
@@ -153,25 +159,31 @@ player.add(Player())
 
 obstacle_group = pygame.sprite.Group()
 
-hell_background = pygame.image.load('assets/environment/hell_bg_temp.png').convert()
-hell_floor = pygame.image.load('assets/environment/hell_floor.png').convert()
-ocean_background = pygame.image.load('assets/environment/ocean_bg_temp.png').convert()
-ocean_floor = pygame.image.load('assets/environment/ocean_floor.png').convert()
+zone_fire = 'fire'
+zone_ice = 'ice'
+
+fire_obstacles = ['coil_long','coil_short','openswitch','resistor','transformer_up','transformer_down','portal']
+fire_weights = [2, 2, 2, 2, 2, 2, 1]
+ice_obstacles = ['fluxflip_vertical','fluxflip_horizontal','roundabout','signswitcher','stick','portal']
+ice_weights = [2, 2, 2, 2, 2, 1]
+
+current_zone = zone_fire
+
+fire_background = pygame.image.load('assets/environment/hell_bg_temp.png').convert()
+fire_floor = pygame.image.load('assets/environment/hell_floor.png').convert()
+ice_background = pygame.image.load('assets/environment/ocean_bg_temp.png').convert()
+ice_floor = pygame.image.load('assets/environment/ocean_floor.png').convert()
 
 # Intro screen
 player_stand = pygame.image.load('graphics/player/player_stand.png').convert_alpha()
 player_stand = pygame.transform.rotozoom(player_stand,0,2)
 player_stand_rect = player_stand.get_rect(center = (400,200))
 
-#game_name = test_font.render('Pixel Runner',False,(111,196,169))
-#game_name_rect = game_name.get_rect(center = (400,80))
-
-#game_message = test_font.render('Press space to run',False,(111,196,169))
-#game_message_rect = game_message.get_rect(center = (400,330))
-
 # Timer 
 obstacle_timer = pygame.USEREVENT + 1
 pygame.time.set_timer(obstacle_timer,1500)
+
+last_obstacle_time = 0
 
 while True:
 	for event in pygame.event.get():
@@ -181,8 +193,13 @@ while True:
 
 		if game_active:
 			if event.type == obstacle_timer:
-				obstacle_group.add(Obstacle(choice(['coil_long','coil_short','openswitch','resistor','transformer_up','transformer_down','fluxflip_vertical','fluxflip_horizontal','roundabout','signswitcher','stick'])))
-		
+				if current_zone == zone_fire:
+					obstacle_type = choices(fire_obstacles, weights=fire_weights)[0]
+				if current_zone == zone_ice:
+					obstacle_type = choices(ice_obstacles, weights=ice_weights)[0]
+				obstacle_group.add(Obstacle(obstacle_type))
+				last_obstacle_time = pygame.time.get_ticks()
+
 		else:
 			if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
 				game_active = True
@@ -190,8 +207,12 @@ while True:
 
 
 	if game_active:
-		screen.blit(ocean_background,(0,0))
-		screen.blit(ocean_floor,(0,535))
+		if current_zone == zone_fire:
+			screen.blit(fire_background,(0,0))
+			screen.blit(fire_floor,(0,535))
+		else:
+			screen.blit(ice_background,(0,0))
+			screen.blit(ice_floor,(0,535))
 		score = display_score()
 		
 		player.draw(screen)
@@ -200,8 +221,58 @@ while True:
 		obstacle_group.draw(screen)
 		obstacle_group.update()
 
-		game_active = collision_sprite()
-		
+		collided_obstacle = collision_sprite()
+		if collided_obstacle:
+			if collided_obstacle.type in ['coil_long', 'coil_short']:
+				print('coil')
+				# put effect
+
+			elif collided_obstacle.type == 'openswitch':
+				print('openswitch')
+				# put effect
+
+			elif collided_obstacle.type == 'resistor':
+				print('resistor')
+				game_active = False
+				# put effect
+
+			elif collided_obstacle.type == 'transformer_up':
+				print('transformer_up')
+				# put effect
+
+			elif collided_obstacle.type == 'transformer_down':
+				print('transformer_down')
+				# put effect
+
+			elif collided_obstacle.type in ['fluxflip_horizontal', 'fluxflip_vertical']:
+				print('fluxflip')
+				# put effect
+
+			elif collided_obstacle.type == 'roundabout':
+				print('roundabout')
+				# put effect
+
+			elif collided_obstacle.type == 'signswitcher':
+				print('signswitcher')
+				# put effect
+
+			elif collided_obstacle.type == 'stick':
+				print('stick')
+				# put effect
+
+			elif collided_obstacle.type == 'portal':
+				if current_zone == zone_fire:
+					current_zone = zone_ice
+				else:
+					current_zone = zone_fire
+				obstacle_group.empty()
+
+			collided_obstacle.kill()
+
+		else:
+			game_active = True
+
+
 	else:
 		screen.fill((94,129,162))
 		screen.blit(player_stand,player_stand_rect)
