@@ -83,7 +83,7 @@ class Obstacle(pygame.sprite.Sprite):
 			fluxflip_vertical_1 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/fluxflip_vertical_frame1.png').convert_alpha(),0.2)
 			fluxflip_vertical_2 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/fluxflip_vertical_frame2.png').convert_alpha(),0.2)
 			self.frames = [fluxflip_vertical_1,fluxflip_vertical_2]
-			y_pos = 210
+			y_pos = 300
 		if type == 'fluxflip_horizontal':
 			fluxflip_horizontal_1 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/fluxflip_horizontal_frame1.png').convert_alpha(),0.2)
 			fluxflip_horizontal_2 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/fluxflip_horizontal_frame2.png').convert_alpha(),0.2)
@@ -93,17 +93,17 @@ class Obstacle(pygame.sprite.Sprite):
 			roundabout_1 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/roundabout_frame1.png').convert_alpha(),0.2)
 			roundabout_2 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/roundabout_frame2.png').convert_alpha(),0.2)
 			self.frames = [roundabout_1,roundabout_2]
-			y_pos = 100
+			y_pos = 300
 		if type == 'signswitcher':
 			signswitcher_1 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/signswitcher_frame1.png').convert_alpha(),0.2)
 			signswitcher_2 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/signswitcher_frame2.png').convert_alpha(),0.2)
 			self.frames = [signswitcher_1,signswitcher_2]
-			y_pos = 350
+			y_pos = 300
 		if type == 'stick':
 			stick_1 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/stick_frame1.png').convert_alpha(),0.1)
 			stick_2 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/stick_frame2.png').convert_alpha(),0.1)
 			self.frames = [stick_1,stick_2]
-			y_pos = 500
+			y_pos = 300
 		if type == 'portal':
 			portal_1 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/portal.png').convert_alpha(),0.2)
 			self.frames = [portal_1]
