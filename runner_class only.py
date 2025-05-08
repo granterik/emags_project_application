@@ -169,10 +169,14 @@ ice_weights = [2, 2, 2, 2, 2, 1]
 
 current_zone = zone_fire
 
-fire_background = pygame.image.load('assets/environment/hell_bg_temp.png').convert()
-fire_floor = pygame.image.load('assets/environment/hell_floor.png').convert()
-ice_background = pygame.image.load('assets/environment/ocean_bg_temp.png').convert()
-ice_floor = pygame.image.load('assets/environment/ocean_floor.png').convert()
+fire_background = pygame.image.load('assets/environment/fire_bg.png').convert()
+fire_floor = pygame.image.load('assets/environment/fire_floor.png').convert()
+ice_background = pygame.image.load('assets/environment/ice_bg.png').convert()
+ice_floor = pygame.image.load('assets/environment/ice_floor.png').convert()
+
+screen_width, screen_height = screen.get_size()
+fire_background_scaled = pygame.transform.scale(fire_background, (screen_width, screen_height))
+ice_background_scaled = pygame.transform.scale(ice_background,(screen_width,screen_height))
 
 # Intro screen
 player_stand = pygame.image.load('graphics/player/player_stand.png').convert_alpha()
@@ -208,10 +212,10 @@ while True:
 
 	if game_active:
 		if current_zone == zone_fire:
-			screen.blit(fire_background,(0,0))
+			screen.blit(fire_background_scaled,(0,0))
 			screen.blit(fire_floor,(0,535))
 		else:
-			screen.blit(ice_background,(0,0))
+			screen.blit(ice_background_scaled,(0,0))
 			screen.blit(ice_floor,(0,535))
 		score = display_score()
 		
