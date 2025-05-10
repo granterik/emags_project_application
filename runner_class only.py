@@ -247,6 +247,10 @@ while True:
 
 				Obstacle.update = slowed_update
 
+			elif collided_obstacle.type == 'openswitch':
+				print('openswitch')
+				# put effect
+
 			elif collided_obstacle.type == 'resistor':
 				print('resistor')
 				game_active = False
