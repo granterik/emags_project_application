@@ -219,6 +219,7 @@ while True:
 		player.draw(screen)
 		player.update()
 
+
 		obstacle_group.draw(screen)
 		obstacle_group.update()
 
@@ -226,11 +227,25 @@ while True:
 		if collided_obstacle:
 			if collided_obstacle.type in ['coil_long', 'coil_short']:
 				print('coil')
-				# put effect
+				slow_start_time = pygame.time.get_ticks()
+				obstacle_group.slow_effect_active = True
+				obstacle_group.slow_effect_timer = slow_start_time
 
-			elif collided_obstacle.type == 'openswitch':
-				print('openswitch')
-				# put effect
+				original_update = Obstacle.update
+
+
+				def slowed_update(self):
+					speed = 2 if getattr(obstacle_group, 'slow_effect_active',
+										 False) and pygame.time.get_ticks() - obstacle_group.slow_effect_timer < 2000 else 6
+					self.animation_state()
+					self.rect.x -= speed
+
+					if pygame.time.get_ticks() - obstacle_group.slow_effect_timer >= 2000:
+						obstacle_group.slow_effect_active = False
+						Obstacle.update = original_update  # restore normal speed
+
+
+				Obstacle.update = slowed_update
 
 			elif collided_obstacle.type == 'resistor':
 				print('resistor')
