@@ -230,8 +230,7 @@ while True:
 
 			elif collided_obstacle.type == 'openswitch':
 				print('openswitch')
-				player.sprite.gravity = 22
-				player.sprite.jump_sound.play()
+				player.sprite.gravity = 22  # still affects the player
 
 				# Bright fog-like overlay (light yellowish fog)
 				fog_surface = pygame.Surface((screen_width, screen_height))
@@ -268,13 +267,6 @@ while True:
 					pygame.time.delay(40)
 					screen.fill((40, 40, 40))  # Slight smoky black background
 
-				try:
-					switch_sound = pygame.mixer.Sound('audio/switch_crash.mp3')
-					switch_sound.set_volume(0.8)
-					switch_sound.play()
-				except:
-					print("Missing switch_crash.mp3")
-
 				pygame.time.set_timer(pygame.USEREVENT + 2, 1000, loops=1)
 
 
@@ -306,13 +298,6 @@ while True:
 			elif collided_obstacle.type == 'stick':
 				print('stick')
 				player.sprite.stuck_timer = 90
-
-				try:
-					stick_sound = pygame.mixer.Sound('audio/stick_trap.mp3')
-					stick_sound.set_volume(0.5)
-					stick_sound.play()
-				except:
-					print("Missing stick_trap.mp3")
 
 				for i in range(6):
 					# Freezing overlay building up
@@ -375,6 +360,7 @@ while True:
 					pygame.time.delay(90)
 
 				pygame.time.delay(350)
+
 
 			elif collided_obstacle.type == 'portal':
 				if current_zone == zone_fire:
