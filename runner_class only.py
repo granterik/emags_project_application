@@ -18,6 +18,7 @@ class Player(pygame.sprite.Sprite):
 
 		self.jump_sound = pygame.mixer.Sound('audio/jump.mp3')
 		self.jump_sound.set_volume(0.5)
+		self.velocity_x = 0 # horizontal velocity for fluxflip_horizontal*
 
 	def player_input(self):
 		keys = pygame.key.get_pressed()
@@ -31,6 +32,10 @@ class Player(pygame.sprite.Sprite):
 		if self.rect.bottom >= 535:
 			self.rect.bottom = 535
 
+	def move_horizontal(self):
+		self.rect.x += self.velocity_x
+		self.velocity_x *= 0.9  # friction to slow down*
+
 	def animation_state(self):
 		if self.rect.bottom < 535:
 			self.image = self.player_jump
@@ -42,6 +47,7 @@ class Player(pygame.sprite.Sprite):
 	def update(self):
 		self.player_input()
 		self.apply_gravity()
+		self.move_horizontal() #added*
 		self.animation_state()
 
 class Obstacle(pygame.sprite.Sprite):
@@ -146,13 +152,17 @@ pygame.init()
 screen = pygame.display.set_mode((1000,700))
 pygame.display.set_caption('Current Man')
 clock = pygame.time.Clock()
-#test_font = pygame.font.Font('font/Pixeltype.ttf', 50)
+#test_font = pygame.fme.time.Clockont.Font('font/Pixeltype.ttf', 50)
 game_active = False
 start_time = 0
 score = 0
 bg_music = pygame.mixer.Sound('audio/music.wav')
 bg_music.play(loops = -1)
-
+#additional sfx*
+transformer_up_sound = pygame.mixer.Sound('audio/transformer_up.mp3')
+transformer_up_sound.set_volume(1)
+transformer_down_sound = pygame.mixer.Sound('audio/transformer_down.mp3')
+transformer_down_sound.set_volume(1)
 #Groups
 player = pygame.sprite.GroupSingle()
 player.add(Player())
@@ -177,6 +187,29 @@ ice_floor = pygame.image.load('assets/environment/ice_floor.png').convert()
 screen_width, screen_height = screen.get_size()
 fire_background_scaled = pygame.transform.scale(fire_background, (screen_width, screen_height))
 ice_background_scaled = pygame.transform.scale(ice_background,(screen_width,screen_height))
+
+# screenshake transformer_down*
+def screenshake(screen, player, obstacle_group, current_zone, intensity=5, duration=10):
+# Select background and floor based on current zone
+	background = fire_background_scaled if current_zone == zone_fire else ice_background_scaled
+	floor = fire_floor if current_zone == zone_fire else ice_floor
+
+	for _ in range(duration):
+		offset_x = randint(-intensity, intensity)
+		offset_y = randint(-intensity, intensity)
+
+		# Draw background and floor with offset
+		screen.blit(background, (offset_x, offset_y))
+		screen.blit(floor, (0 + offset_x, 535 + offset_y))
+
+		# Draw player and obstacles with offset
+		for sprite in player:
+			screen.blit(sprite.image, sprite.rect.move(offset_x, offset_y))
+		for sprite in obstacle_group:
+			screen.blit(sprite.image, sprite.rect.move(offset_x, offset_y))
+
+		pygame.display.update()
+		pygame.time.delay(20)
 
 # Intro screen
 
@@ -296,15 +329,29 @@ while True:
 
 			elif collided_obstacle.type == 'transformer_up':
 				print('transformer_up')
-				# put effect
+				player.sprite.gravity = -20  #accelerate upward*
+				transformer_up_sound.play() # put effect*
 
 			elif collided_obstacle.type == 'transformer_down':
 				print('transformer_down')
-				# put effect
+				player.sprite.gravity += 15  # accelerate downward*
+				transformer_down_sound.play()  # put effect*
+				# Apply screenshake based on current zone*
+				screenshake(screen, player, obstacle_group, current_zone, intensity=5, duration=10)
 
 			elif collided_obstacle.type in ['fluxflip_horizontal', 'fluxflip_vertical']:
 				print('fluxflip')
-				# put effect
+				if collided_obstacle.type == 'fluxflip_vertical':
+					player.sprite.gravity = -20  # Launch upward like a jump*
+					flux_sound = pygame.mixer.Sound('audio/fluxflip_vertical.wav')
+					flux_sound.set_volume(10)
+					flux_sound.play()
+				elif collided_obstacle.type == 'fluxflip_horizontal':
+					player.sprite.velocity_x = 15  # Push player rightward
+					fluxflip_horizontal_sound = pygame.mixer.Sound('audio/fluxflip_horizontal.wav')
+					fluxflip_horizontal_sound.set_volume(10)
+					fluxflip_horizontal_sound.play()
+			# put effect
 
 			elif collided_obstacle.type == 'roundabout':
 				print('roundabout')
