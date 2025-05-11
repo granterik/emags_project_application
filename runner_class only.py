@@ -18,6 +18,7 @@ class Player(pygame.sprite.Sprite):
 
 		self.jump_sound = pygame.mixer.Sound('audio/jump.mp3')
 		self.jump_sound.set_volume(0.5)
+		self.velocity_x = 0 # horizontal velocity for fluxflip_horizontal*
 
 	def player_input(self):
 		keys = pygame.key.get_pressed()
@@ -31,6 +32,10 @@ class Player(pygame.sprite.Sprite):
 		if self.rect.bottom >= 535:
 			self.rect.bottom = 535
 
+	def move_horizontal(self):
+		self.rect.x += self.velocity_x
+		self.velocity_x *= 0.9  # friction to slow down*
+
 	def animation_state(self):
 		if self.rect.bottom < 535:
 			self.image = self.player_jump
@@ -42,6 +47,7 @@ class Player(pygame.sprite.Sprite):
 	def update(self):
 		self.player_input()
 		self.apply_gravity()
+		self.move_horizontal() #added*
 		self.animation_state()
 
 class Obstacle(pygame.sprite.Sprite):
@@ -280,12 +286,14 @@ while True:
 				print('fluxflip')
 				if collided_obstacle.type == 'fluxflip_vertical':
 					player.sprite.gravity = -20  # Launch upward like a jump*
-					flux_sound = pygame.mixer.Sound('audio/fluxflip.wav')
+					flux_sound = pygame.mixer.Sound('audio/fluxflip_vertical.wav')
 					flux_sound.set_volume(10)
 					flux_sound.play()
 				elif collided_obstacle.type == 'fluxflip_horizontal':
-					# No special physics effect; acts like a visual directional guide*
-					pass
+					player.sprite.velocity_x = 15  # Push player rightward
+					fluxflip_horizontal_sound = pygame.mixer.Sound('audio/fluxflip_horizontal.wav')
+					fluxflip_horizontal_sound.set_volume(10)
+					fluxflip_horizontal_sound.play()
 			# put effect
 
 			elif collided_obstacle.type == 'roundabout':
