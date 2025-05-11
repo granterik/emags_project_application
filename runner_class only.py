@@ -249,7 +249,45 @@ while True:
 
 			elif collided_obstacle.type == 'openswitch':
 				print('openswitch')
-				# put effect
+				player.sprite.gravity = 22  # still affects the player
+
+				# Bright fog-like overlay (light yellowish fog)
+				fog_surface = pygame.Surface((screen_width, screen_height))
+				fog_surface.fill((255, 255, 210))
+				fog_surface.set_alpha(180)
+
+
+				def draw_foggy_lightning(surface, start, depth, thickness):
+					if depth <= 0:
+						return
+					segment_len = randint(40, 60)
+					offset = (randint(-50, 50), segment_len)
+					end = (start[0] + offset[0], start[1] + offset[1])
+
+					# White-hot lightning core
+					pygame.draw.line(surface, (255, 255, 255), start, end, thickness + 2)
+					# Yellow outer glow
+					pygame.draw.line(surface, (255, 255, 120), start, end, thickness)
+
+					draw_foggy_lightning(surface, end, depth - 1, thickness)
+
+
+				for i in range(6):
+					# Slightly heavier shake
+					offset = (randint(-12, 12), randint(-10, 10))
+					screen.blit(fog_surface, offset)
+
+					# Multiple large, fog-cutting bolts
+					for _ in range(4):
+						start_x = randint(200, 800)
+						draw_foggy_lightning(screen, (start_x, 0), depth=5, thickness=4)
+
+					pygame.display.update()
+					pygame.time.delay(40)
+					screen.fill((40, 40, 40))  # Slight smoky black background
+
+				pygame.time.set_timer(pygame.USEREVENT + 2, 1000, loops=1)
+
 
 			elif collided_obstacle.type == 'resistor':
 				print('resistor')
@@ -278,7 +316,70 @@ while True:
 
 			elif collided_obstacle.type == 'stick':
 				print('stick')
-				# put effect
+				player.sprite.stuck_timer = 90
+
+				for i in range(6):
+					# Freezing overlay building up
+					freeze_surface = pygame.Surface((screen_width, screen_height))
+					freeze_surface.fill((180, 230, 255))
+					freeze_surface.set_alpha(40 + i * 15)
+					screen.blit(freeze_surface, (0, 0))
+
+					# Horizontal shock arcs — lower part of screen (ground-level)
+					for _ in range(6):
+						start_x = randint(100, 900)
+						start_y = randint(550, 640)  # Lowered
+						end_x = start_x + randint(-100, 100)
+						end_y = start_y + randint(-40, 40)
+						pygame.draw.line(screen, (180, 255, 255), (start_x, start_y), (end_x, end_y), 3)
+
+
+					# Vertical bolts from sky — THICK & POWERFUL like in openswitch
+					def draw_downward_lightning(surface, start, depth, thickness):
+						if depth <= 0:
+							return
+						seg_len = randint(40, 60)
+						end = (start[0] + randint(-40, 40), start[1] + seg_len)
+						# Core and glow
+						pygame.draw.line(surface, (255, 255, 255), start, end, thickness + 1)
+						pygame.draw.line(surface, (255, 255, 100), start, end, thickness)
+						draw_downward_lightning(surface, end, depth - 1, thickness)
+
+
+					if i >= 1:
+						for _ in range(2):
+							x = randint(100, 300)
+							draw_downward_lightning(screen, (x, 0), 5, 4)
+
+					if i >= 2:
+						for _ in range(2):
+							x = randint(400, 600)
+							draw_downward_lightning(screen, (x, 0), 5, 4)
+
+					if i >= 3:
+						for _ in range(2):
+							x = randint(700, 900)
+							draw_downward_lightning(screen, (x, 0), 5, 4)
+
+					# Final shimmer burst
+					if i == 5:
+						for _ in range(4):
+							x = randint(300, 700)
+							y = randint(500, 600)
+							pygame.draw.line(screen, (255, 255, 255), (x, y),
+											 (x + randint(-60, 60), y + randint(-40, 40)), 2)
+
+						# SMOKE blast
+						smoke = pygame.Surface((screen_width, screen_height))
+						smoke.fill((120, 120, 120))
+						smoke.set_alpha(120)
+						screen.blit(smoke, (0, 0))
+
+					pygame.display.update()
+					pygame.time.delay(90)
+
+				pygame.time.delay(350)
+
 
 			elif collided_obstacle.type == 'portal':
 				if current_zone == zone_fire:
