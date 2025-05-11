@@ -111,8 +111,9 @@ class Obstacle(pygame.sprite.Sprite):
 			self.frames = [stick_1,stick_2]
 			y_pos = 300
 		if type == 'portal':
-			portal_1 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/portal.png').convert_alpha(),0.2)
-			self.frames = [portal_1]
+			portal_1 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/portal_frame1.png').convert_alpha(),0.2)
+			portal_2 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/portal_frame2.png').convert_alpha(),0.2)
+			self.frames = [portal_1,portal_2]
 			y_pos = 300
 
 		self.animation_index = 0
@@ -147,6 +148,27 @@ def collision_sprite():
         return collided_obstacle
     return None
 
+def screenshake(screen, player, obstacle_group, current_zone, intensity=5, duration=10):
+# Select background and floor based on current zone
+	background = fire_background_scaled if current_zone == zone_fire else ice_background_scaled
+	floor = fire_floor if current_zone == zone_fire else ice_floor
+
+	for _ in range(duration):
+		offset_x = randint(-intensity, intensity)
+		offset_y = randint(-intensity, intensity)
+
+		# Draw background and floor with offset
+		screen.blit(background, (offset_x, offset_y))
+		screen.blit(floor, (0 + offset_x, 535 + offset_y))
+
+		# Draw player and obstacles with offset
+		for sprite in player:
+			screen.blit(sprite.image, sprite.rect.move(offset_x, offset_y))
+		for sprite in obstacle_group:
+			screen.blit(sprite.image, sprite.rect.move(offset_x, offset_y))
+
+		pygame.display.update()
+		pygame.time.delay(20)
 
 pygame.init()
 screen = pygame.display.set_mode((1000,700))
@@ -187,29 +209,6 @@ ice_floor = pygame.image.load('assets/environment/ice_floor.png').convert()
 screen_width, screen_height = screen.get_size()
 fire_background_scaled = pygame.transform.scale(fire_background, (screen_width, screen_height))
 ice_background_scaled = pygame.transform.scale(ice_background,(screen_width,screen_height))
-
-# screenshake transformer_down*
-def screenshake(screen, player, obstacle_group, current_zone, intensity=5, duration=10):
-# Select background and floor based on current zone
-	background = fire_background_scaled if current_zone == zone_fire else ice_background_scaled
-	floor = fire_floor if current_zone == zone_fire else ice_floor
-
-	for _ in range(duration):
-		offset_x = randint(-intensity, intensity)
-		offset_y = randint(-intensity, intensity)
-
-		# Draw background and floor with offset
-		screen.blit(background, (offset_x, offset_y))
-		screen.blit(floor, (0 + offset_x, 535 + offset_y))
-
-		# Draw player and obstacles with offset
-		for sprite in player:
-			screen.blit(sprite.image, sprite.rect.move(offset_x, offset_y))
-		for sprite in obstacle_group:
-			screen.blit(sprite.image, sprite.rect.move(offset_x, offset_y))
-
-		pygame.display.update()
-		pygame.time.delay(20)
 
 # Intro screen
 
@@ -259,13 +258,11 @@ while True:
 		collided_obstacle = collision_sprite()
 		if collided_obstacle:
 			if collided_obstacle.type in ['coil_long', 'coil_short']:
-				print('coil')
 				slow_start_time = pygame.time.get_ticks()
 				obstacle_group.slow_effect_active = True
 				obstacle_group.slow_effect_timer = slow_start_time
 
 				original_update = Obstacle.update
-
 
 				def slowed_update(self):
 					speed = 2 if getattr(obstacle_group, 'slow_effect_active',
@@ -277,18 +274,15 @@ while True:
 						obstacle_group.slow_effect_active = False
 						Obstacle.update = original_update  # restore normal speed
 
-
 				Obstacle.update = slowed_update
 
 			elif collided_obstacle.type == 'openswitch':
-				print('openswitch')
 				player.sprite.gravity = 22  # still affects the player
 
 				# Bright fog-like overlay (light yellowish fog)
 				fog_surface = pygame.Surface((screen_width, screen_height))
 				fog_surface.fill((255, 255, 210))
 				fog_surface.set_alpha(180)
-
 
 				def draw_foggy_lightning(surface, start, depth, thickness):
 					if depth <= 0:
@@ -303,7 +297,6 @@ while True:
 					pygame.draw.line(surface, (255, 255, 120), start, end, thickness)
 
 					draw_foggy_lightning(surface, end, depth - 1, thickness)
-
 
 				for i in range(6):
 					# Slightly heavier shake
@@ -321,26 +314,20 @@ while True:
 
 				pygame.time.set_timer(pygame.USEREVENT + 2, 1000, loops=1)
 
-
 			elif collided_obstacle.type == 'resistor':
-				print('resistor')
 				game_active = False
-				# put effect
 
 			elif collided_obstacle.type == 'transformer_up':
-				print('transformer_up')
 				player.sprite.gravity = -20  #accelerate upward*
 				transformer_up_sound.play() # put effect*
 
 			elif collided_obstacle.type == 'transformer_down':
-				print('transformer_down')
 				player.sprite.gravity += 15  # accelerate downward*
 				transformer_down_sound.play()  # put effect*
 				# Apply screenshake based on current zone*
 				screenshake(screen, player, obstacle_group, current_zone, intensity=5, duration=10)
 
 			elif collided_obstacle.type in ['fluxflip_horizontal', 'fluxflip_vertical']:
-				print('fluxflip')
 				if collided_obstacle.type == 'fluxflip_vertical':
 					player.sprite.gravity = -20  # Launch upward like a jump*
 					flux_sound = pygame.mixer.Sound('audio/fluxflip_vertical.wav')
@@ -362,7 +349,6 @@ while True:
 				# put effect
 
 			elif collided_obstacle.type == 'stick':
-				print('stick')
 				player.sprite.stuck_timer = 90
 
 				for i in range(6):
