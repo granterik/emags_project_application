@@ -1,22 +1,18 @@
 import pygame
+import sys
 from sys import exit
 from random import randint, choices
 import math
 
-
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        player_walk_1 = pygame.transform.scale_by(pygame.image.load('assets/player/player_frame1.png').convert_alpha(),
-                                                  0.2)
-        player_walk_2 = pygame.transform.scale_by(pygame.image.load('assets/player/player_frame2.png').convert_alpha(),
-                                                  0.2)
-        player_walk_3 = pygame.transform.scale_by(pygame.image.load('assets/player/player_frame3.png').convert_alpha(),
-                                                  0.2)
+        player_walk_1 = pygame.transform.scale_by(pygame.image.load('assets/player/player_frame1.png').convert_alpha(),0.2)
+        player_walk_2 = pygame.transform.scale_by(pygame.image.load('assets/player/player_frame2.png').convert_alpha(),0.2)
+        player_walk_3 = pygame.transform.scale_by(pygame.image.load('assets/player/player_frame3.png').convert_alpha(),0.2)
         self.player_walk = [player_walk_1, player_walk_2, player_walk_3]
         self.player_index = 0
-        self.player_jump = pygame.transform.scale_by(
-            pygame.image.load('assets/player/player_jump_frame1.png').convert_alpha(), 0.2)
+        self.player_jump = pygame.transform.scale_by(pygame.image.load('assets/player/player_jump_frame1.png').convert_alpha(), 0.2)
 
         self.image = self.player_walk[self.player_index]
         self.rect = self.image.get_rect(midbottom=(200, 535))
@@ -62,7 +58,6 @@ class Player(pygame.sprite.Sprite):
     def switch_sign(self):
         self.sign *= - 1
         self.switch_sound.play()
-        print(f'Sign altered. New sign: {self.sign}')
 
     def roundabout_collision(self, obstacle_group):
         for obj in obstacle_group.sprites():
@@ -124,7 +119,6 @@ class Player(pygame.sprite.Sprite):
                 else:
                     self.rect.x -= int(dx * force_magnitude)
                     self.rect.y -= int(dy * force_magnitude)
-                    print("Attracted")
                     if distance < 20:
                         self.rect.center = obj.rect.center
                     attraction(screen, center=(player.sprite.rect.centerx, player.sprite.rect.centery))
@@ -166,7 +160,6 @@ class Player(pygame.sprite.Sprite):
         self.roundabout_collision(obstacle_group)
         self.stick_collision(obstacle_group)
 
-
 class Obstacle(pygame.sprite.Sprite):
     def __init__(self, type):
         super().__init__()
@@ -174,82 +167,60 @@ class Obstacle(pygame.sprite.Sprite):
         self.velocity_y = 0
 
         if type == 'coil_short':
-            coil_short_1 = pygame.transform.scale_by(
-                pygame.image.load('assets/obstacles/coil_short_frame1.png').convert_alpha(), 0.07)
-            coil_short_2 = pygame.transform.scale_by(
-                pygame.image.load('assets/obstacles/coil_short_frame2.png').convert_alpha(), 0.07)
+            coil_short_1 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/coil_short_frame1.png').convert_alpha(), 0.07)
+            coil_short_2 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/coil_short_frame2.png').convert_alpha(), 0.07)
             self.frames = [coil_short_1, coil_short_2]
             y_pos = 610
         if type == 'openswitch':
-            openswitch_1 = pygame.transform.scale_by(
-                pygame.image.load('assets/obstacles/openswitch_frame1.png').convert_alpha(), 0.4)
-            openswitch_2 = pygame.transform.scale_by(
-                pygame.image.load('assets/obstacles/openswitch_frame2.png').convert_alpha(), 0.4)
+            openswitch_1 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/openswitch_frame1.png').convert_alpha(), 0.4)
+            openswitch_2 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/openswitch_frame2.png').convert_alpha(), 0.4)
             self.frames = [openswitch_1, openswitch_2]
             y_pos = 540
         if type == 'resistor':
-            resistor_1 = pygame.transform.scale_by(
-                pygame.image.load('assets/obstacles/resistor_frame1.png').convert_alpha(), 0.2)
-            resistor_2 = pygame.transform.scale_by(
-                pygame.image.load('assets/obstacles/resistor_frame2.png').convert_alpha(), 0.2)
+            resistor_1 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/resistor_frame1.png').convert_alpha(), 0.2)
+            resistor_2 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/resistor_frame2.png').convert_alpha(), 0.2)
             self.frames = [resistor_1, resistor_2]
             y_pos = 300
         if type == 'transformer_up':
-            transformer_up_1 = pygame.transform.scale_by(
-                pygame.image.load('assets/obstacles/transformer_up_frame1.png').convert_alpha(), 0.2)
-            transformer_up_2 = pygame.transform.scale_by(
-                pygame.image.load('assets/obstacles/transformer_up_frame2.png').convert_alpha(), 0.2)
+            transformer_up_1 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/transformer_up_frame1.png').convert_alpha(), 0.2)
+            transformer_up_2 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/transformer_up_frame2.png').convert_alpha(), 0.2)
             self.frames = [transformer_up_1, transformer_up_2]
             y_pos = 300
         if type == 'transformer_down':
-            transformer_down_1 = pygame.transform.scale_by(
-                pygame.image.load('assets/obstacles/transformer_down_frame1.png').convert_alpha(), 0.2)
-            transformer_down_2 = pygame.transform.scale_by(
-                pygame.image.load('assets/obstacles/transformer_down_frame2.png').convert_alpha(), 0.2)
+            transformer_down_1 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/transformer_down_frame1.png').convert_alpha(), 0.2)
+            transformer_down_2 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/transformer_down_frame2.png').convert_alpha(), 0.2)
             self.frames = [transformer_down_1, transformer_down_2]
             y_pos = 300
         if type == 'fluxflip_vertical':
-            fluxflip_vertical_1 = pygame.transform.scale_by(
-                pygame.image.load('assets/obstacles/fluxflip_vertical_frame1.png').convert_alpha(), 0.2)
-            fluxflip_vertical_2 = pygame.transform.scale_by(
-                pygame.image.load('assets/obstacles/fluxflip_vertical_frame2.png').convert_alpha(), 0.2)
+            fluxflip_vertical_1 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/fluxflip_vertical_frame1.png').convert_alpha(), 0.2)
+            fluxflip_vertical_2 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/fluxflip_vertical_frame2.png').convert_alpha(), 0.2)
             self.frames = [fluxflip_vertical_1, fluxflip_vertical_2]
             y_pos = 300
         if type == 'fluxflip_horizontal':
-            fluxflip_horizontal_1 = pygame.transform.scale_by(
-                pygame.image.load('assets/obstacles/fluxflip_horizontal_frame1.png').convert_alpha(), 0.2)
-            fluxflip_horizontal_2 = pygame.transform.scale_by(
-                pygame.image.load('assets/obstacles/fluxflip_horizontal_frame2.png').convert_alpha(), 0.2)
+            fluxflip_horizontal_1 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/fluxflip_horizontal_frame1.png').convert_alpha(), 0.2)
+            fluxflip_horizontal_2 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/fluxflip_horizontal_frame2.png').convert_alpha(), 0.2)
             self.frames = [fluxflip_horizontal_1, fluxflip_horizontal_2]
             y_pos = 300
         if type == 'roundabout':
-            roundabout_1 = pygame.transform.scale_by(
-                pygame.image.load('assets/obstacles/roundabout_frame1.png').convert_alpha(), 0.2)
-            roundabout_2 = pygame.transform.scale_by(
-                pygame.image.load('assets/obstacles/roundabout_frame2.png').convert_alpha(), 0.2)
+            roundabout_1 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/roundabout_frame1.png').convert_alpha(), 0.2)
+            roundabout_2 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/roundabout_frame2.png').convert_alpha(), 0.2)
             self.frames = [roundabout_1, roundabout_2]
             y_pos = 300
         if type == 'signswitcher':
-            signswitcher_1 = pygame.transform.scale_by(
-                pygame.image.load('assets/obstacles/signswitcher_frame1.png').convert_alpha(), 0.2)
-            signswitcher_2 = pygame.transform.scale_by(
-                pygame.image.load('assets/obstacles/signswitcher_frame2.png').convert_alpha(), 0.2)
+            signswitcher_1 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/signswitcher_frame1.png').convert_alpha(), 0.2)
+            signswitcher_2 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/signswitcher_frame2.png').convert_alpha(), 0.2)
             self.frames = [signswitcher_1, signswitcher_2]
             y_pos = 300
         if type == 'stick':
-            stick_1 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/stick_frame1.png').convert_alpha(),
-                                                0.12)
-            stick_2 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/stick_frame2.png').convert_alpha(),
-                                                0.12)
+            stick_1 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/stick_frame1.png').convert_alpha(),0.12)
+            stick_2 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/stick_frame2.png').convert_alpha(),0.12)
             self.original_frames = [stick_1, stick_2]
             self.frames = self.original_frames.copy()
             self.stick_angle = 0
             y_pos = 300
         if type == 'portal':
-            portal_1 = pygame.transform.scale_by(
-                pygame.image.load('assets/obstacles/portal_frame1.png').convert_alpha(), 0.2)
-            portal_2 = pygame.transform.scale_by(
-                pygame.image.load('assets/obstacles/portal_frame2.png').convert_alpha(), 0.2)
+            portal_1 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/portal_frame1.png').convert_alpha(), 0.2)
+            portal_2 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/portal_frame2.png').convert_alpha(), 0.2)
             self.frames = [portal_1, portal_2]
             y_pos = 300
 
@@ -265,7 +236,6 @@ class Obstacle(pygame.sprite.Sprite):
     def switch_sign(self):
         self.sign *= -1
         self.switch_sound.play()
-        print(f'Sign altered. New sign: {self.sign}')
 
     def update(self):
         self.animation_state()
@@ -288,7 +258,6 @@ class Obstacle(pygame.sprite.Sprite):
         if self.rect.x <= -100:
             self.kill()
 
-
 def display_score():
     current_time = int(pygame.time.get_ticks() / 1000) - start_time
     # score_surf = test_font.render(f'Score: {current_time}',False,(64,64,64))
@@ -296,16 +265,13 @@ def display_score():
     # screen.blit(score_surf,score_rect)
     return current_time
 
-
 def collision_sprite():
     collided_obstacle = pygame.sprite.spritecollideany(player.sprite, obstacle_group)
     if collided_obstacle:
         return collided_obstacle
     return None
 
-
 def screenshake(screen, player, obstacle_group, current_zone, intensity=5, duration=10):
-    # Select background and floor based on current zone
     background = fire_background_scaled if current_zone == zone_fire else ice_background_scaled
     floor = fire_floor if current_zone == zone_fire else ice_floor
 
@@ -313,11 +279,9 @@ def screenshake(screen, player, obstacle_group, current_zone, intensity=5, durat
         offset_x = randint(-intensity, intensity)
         offset_y = randint(-intensity, intensity)
 
-        # Draw background and floor with offset
         screen.blit(background, (offset_x, offset_y))
         screen.blit(floor, (0 + offset_x, 535 + offset_y))
 
-        # Draw player and obstacles with offset
         for sprite in player:
             screen.blit(sprite.image, sprite.rect.move(offset_x, offset_y))
         for sprite in obstacle_group:
@@ -326,7 +290,6 @@ def screenshake(screen, player, obstacle_group, current_zone, intensity=5, durat
         pygame.display.update()
         pygame.time.delay(20)
         screenshake_status = True
-
 
 def show_gameover_screen(screen, gameover_screen):
     screen.blit(gameover_screen, (0, 0))
@@ -341,40 +304,32 @@ def show_gameover_screen(screen, gameover_screen):
             if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                 waiting = False
 
-
 def death_animation(player, screen, clock):
-    global is_in_death_animation  # Flag to prevent drawing player during animation
+    global is_in_death_animation
 
     if not is_in_death_animation:
         is_in_death_animation = True
 
-        # Reference the original sprite
         original_sprite = player.sprite
         original_rect = original_sprite.rect.copy()
         original_y = original_sprite.rect.y
 
-        # Clear the screen without drawing the player
-        screen.fill((0, 0, 0))  # Or whatever your background color is
+        screen.fill((0, 0, 0))
         pygame.display.flip()
-        pygame.time.delay(50)  # Tiny delay to ensure draw is cleared
+        pygame.time.delay(50)
 
-        # Freeze the clean background (without the player)
         frozen_background = screen.copy()
 
-        # Lift the sprite
         lift_height = 30
         lifted_y = max(0, original_y - lift_height)
         original_sprite.rect.y = lifted_y
 
-        # Display lifted sprite on clean background
         screen.blit(frozen_background, (0, 0))
         screen.blit(original_sprite.image, original_sprite.rect)
         pygame.display.flip()
 
-        # Wait while suspended
         pygame.time.wait(900)
 
-        # Animate falling
         fall_speed = 5
         while original_sprite.rect.y < screen.get_height():
             original_sprite.rect.y += fall_speed
@@ -383,7 +338,6 @@ def death_animation(player, screen, clock):
             pygame.display.flip()
             clock.tick(60)
 
-        # Reset position if needed
         original_sprite.rect = original_rect
 
         is_in_death_animation = False
@@ -488,7 +442,6 @@ player.add(Player())
 
 obstacle_group = pygame.sprite.Group()
 
-# Load and scale images
 player.sprite.sign *= -1
 sign1_img = pygame.image.load('assets/obstacles/possign.png').convert_alpha()
 sign2_img = pygame.image.load('assets/obstacles/negsign.png').convert_alpha()
@@ -513,9 +466,6 @@ ice_floor = pygame.image.load('assets/environment/ice_floor.png').convert()
 screen_width, screen_height = screen.get_size()
 fire_background_scaled = pygame.transform.scale(fire_background, (screen_width, screen_height))
 ice_background_scaled = pygame.transform.scale(ice_background, (screen_width, screen_height))
-
-# Intro screen
-
 
 # Timer
 obstacle_timer = pygame.USEREVENT + 1
@@ -577,7 +527,6 @@ while True:
 
                 original_update = Obstacle.update
 
-
                 def slowed_update(self):
                     speed = 2 if getattr(obstacle_group, 'slow_effect_active',
                                          False) and pygame.time.get_ticks() - obstacle_group.slow_effect_timer < 2000 else 6
@@ -588,9 +537,7 @@ while True:
                         obstacle_group.slow_effect_active = False
                         Obstacle.update = original_update  # restore normal speed
 
-
                 Obstacle.update = slowed_update
-
 
             elif collided_obstacle.type == 'openswitch':
                 player.sprite.gravity = 22  # still affects the player
@@ -599,7 +546,6 @@ while True:
                 fog_surface = pygame.Surface((screen_width, screen_height))
                 fog_surface.fill((255, 255, 210))
                 fog_surface.set_alpha(180)
-
 
                 def draw_foggy_lightning(surface, start, depth, thickness):
                     if depth <= 0:
@@ -614,7 +560,6 @@ while True:
                     pygame.draw.line(surface, (255, 255, 120), start, end, thickness)
 
                     draw_foggy_lightning(surface, end, depth - 1, thickness)
-
 
                 for i in range(6):
                     # Slightly heavier shake
@@ -631,7 +576,6 @@ while True:
                     screen.fill((40, 40, 40))  # Slight smoky black background
                     screenshake(screen, player, obstacle_group, current_zone, intensity=5, duration=10)
 
-
                 pygame.time.set_timer(pygame.USEREVENT + 2, 1000, loops=1)
 
                 screenshake_status = True
@@ -640,7 +584,6 @@ while True:
                     deathanim_status = True
                     if deathanim_status == True:
                         show_gameover_screen(screen, gameover_screen)
-
 
             elif collided_obstacle.type == 'resistor':
                 quick_light_flashes(screen)
@@ -656,13 +599,11 @@ while True:
                 player.sprite.gravity = -20  # accelerate upward*
                 transformer_up_sound.play()  # put effect*
 
-
             elif collided_obstacle.type == 'transformer_down':
                 player.sprite.gravity += 15  # accelerate downward*
                 transformer_down_sound.play()  # put effect*
                 # Apply screenshake based on current zone*
                 screenshake(screen, player, obstacle_group, current_zone, intensity=5, duration=10)
-
 
             elif collided_obstacle.type in ['fluxflip_horizontal', 'fluxflip_vertical']:
                 if collided_obstacle.type == 'fluxflip_vertical':
@@ -675,19 +616,13 @@ while True:
                     fluxflip_horizontal_sound = pygame.mixer.Sound('audio/fluxflip_horizontal.wav')
                     fluxflip_horizontal_sound.set_volume(10)
                     fluxflip_horizontal_sound.play()
-            # put effect
 
             elif collided_obstacle.type == 'roundabout':
-                print('roundabout')
                 player.sprite.roundabout_collision(obstacle_group)
 
-
-
             elif collided_obstacle.type == 'signswitcher':
-                print('signswitcher')
                 player.sprite.switch_sign()
                 quick_light_flashes(screen, flash_color=(100, 180, 100))
-
 
             elif collided_obstacle.type == 'stick':
                 player.sprite.stuck_timer = 90
@@ -705,10 +640,6 @@ while True:
 
         else:
             game_active = True
-
-
-
-
 
     else:
         screen.blit(jj_title, (0,0))
