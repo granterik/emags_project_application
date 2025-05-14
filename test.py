@@ -172,8 +172,8 @@ class Obstacle(pygame.sprite.Sprite):
             self.frames = [coil_short_1, coil_short_2]
             y_pos = 610
         if type == 'openswitch':
-            openswitch_1 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/openswitch_frame1.png').convert_alpha(), 0.4)
-            openswitch_2 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/openswitch_frame2.png').convert_alpha(), 0.4)
+            openswitch_1 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/openswitch_frame1.png').convert_alpha(), 0.2)
+            openswitch_2 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/openswitch_frame2.png').convert_alpha(), 0.2)
             self.frames = [openswitch_1, openswitch_2]
             y_pos = 540
         if type == 'resistor':
@@ -304,6 +304,8 @@ def show_gameover_screen(screen, gameover_screen):
             if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                 waiting = False
 
+    reset_game_state()
+
 def death_animation(player, screen, clock):
     global is_in_death_animation
 
@@ -416,6 +418,25 @@ def attraction(screen, center, arrow_count=8, length=40, color=(120, 255, 120), 
         pygame.display.update()
         pygame.time.delay(30)
 
+def reset_game_state():
+    global current_zone
+
+    # Reset zone to fire
+    current_zone = 'fire'
+
+    # Reset player state
+    player.sprite.rect.midbottom = (200, 535)
+    player.sprite.sign = 0
+    player.sprite.gravity = 0
+    player.sprite.dead = False
+    player.sprite.screenshake_done = False
+
+    # Reset obstacle group
+    obstacle_group.empty()
+
+    # Reset time
+    return pygame.time.get_ticks()
+
 pygame.init()
 screen = pygame.display.set_mode((1000, 700))
 pygame.display.set_caption('Joule Jump')
@@ -469,7 +490,7 @@ ice_background_scaled = pygame.transform.scale(ice_background, (screen_width, sc
 
 # Timer
 obstacle_timer = pygame.USEREVENT + 1
-pygame.time.set_timer(obstacle_timer, 1500)
+pygame.time.set_timer(obstacle_timer, 2500)
 
 last_obstacle_time = 0
 
