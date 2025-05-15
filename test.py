@@ -1,5 +1,6 @@
 import pygame
 import sys
+import random
 from sys import exit
 from random import randint, choices
 import math
@@ -34,7 +35,7 @@ class Player(pygame.sprite.Sprite):
     def player_input(self):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_SPACE] and self.rect.bottom >= 535:
-            self.gravity = -25
+            self.gravity = -28
             self.jump_sound.play()
 
     def apply_gravity(self):
@@ -167,62 +168,62 @@ class Obstacle(pygame.sprite.Sprite):
         self.velocity_y = 0
 
         if type == 'coil_short':
-            coil_short_1 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/coil_short_frame1.png').convert_alpha(), 0.07)
-            coil_short_2 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/coil_short_frame2.png').convert_alpha(), 0.07)
+            coil_short_1 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/coil_short_frame1.png').convert_alpha(), 0.28)
+            coil_short_2 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/coil_short_frame2.png').convert_alpha(), 0.28)
             self.frames = [coil_short_1, coil_short_2]
-            y_pos = 610
+            y_pos = 535
         if type == 'openswitch':
-            openswitch_1 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/openswitch_frame1.png').convert_alpha(), 0.2)
-            openswitch_2 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/openswitch_frame2.png').convert_alpha(), 0.2)
+            openswitch_1 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/openswitch_frame1.png').convert_alpha(), 0.25)
+            openswitch_2 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/openswitch_frame2.png').convert_alpha(), 0.25)
             self.frames = [openswitch_1, openswitch_2]
-            y_pos = 540
+            y_pos = 535
         if type == 'resistor':
             resistor_1 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/resistor_frame1.png').convert_alpha(), 0.2)
             resistor_2 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/resistor_frame2.png').convert_alpha(), 0.2)
             self.frames = [resistor_1, resistor_2]
-            y_pos = 300
+            y_pos = random.choice([200, 300])
         if type == 'transformer_up':
             transformer_up_1 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/transformer_up_frame1.png').convert_alpha(), 0.2)
             transformer_up_2 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/transformer_up_frame2.png').convert_alpha(), 0.2)
             self.frames = [transformer_up_1, transformer_up_2]
-            y_pos = 300
+            y_pos = random.choice([300, 535])
         if type == 'transformer_down':
             transformer_down_1 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/transformer_down_frame1.png').convert_alpha(), 0.2)
             transformer_down_2 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/transformer_down_frame2.png').convert_alpha(), 0.2)
             self.frames = [transformer_down_1, transformer_down_2]
-            y_pos = 300
+            y_pos = random.choice([200, 300])
         if type == 'fluxflip_vertical':
             fluxflip_vertical_1 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/fluxflip_vertical_frame1.png').convert_alpha(), 0.2)
             fluxflip_vertical_2 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/fluxflip_vertical_frame2.png').convert_alpha(), 0.2)
             self.frames = [fluxflip_vertical_1, fluxflip_vertical_2]
-            y_pos = 300
+            y_pos = random.choice([300, 535])
         if type == 'fluxflip_horizontal':
             fluxflip_horizontal_1 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/fluxflip_horizontal_frame1.png').convert_alpha(), 0.2)
             fluxflip_horizontal_2 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/fluxflip_horizontal_frame2.png').convert_alpha(), 0.2)
             self.frames = [fluxflip_horizontal_1, fluxflip_horizontal_2]
-            y_pos = 300
+            y_pos = random.choice([200, 300, 535])
         if type == 'roundabout':
-            roundabout_1 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/roundabout_frame1.png').convert_alpha(), 0.2)
-            roundabout_2 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/roundabout_frame2.png').convert_alpha(), 0.2)
+            roundabout_1 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/roundabout_frame1.png').convert_alpha(), 0.18)
+            roundabout_2 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/roundabout_frame2.png').convert_alpha(), 0.18)
             self.frames = [roundabout_1, roundabout_2]
-            y_pos = 300
+            y_pos = random.choice([300, 535])
         if type == 'signswitcher':
             signswitcher_1 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/signswitcher_frame1.png').convert_alpha(), 0.2)
             signswitcher_2 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/signswitcher_frame2.png').convert_alpha(), 0.2)
             self.frames = [signswitcher_1, signswitcher_2]
-            y_pos = 300
+            y_pos = random.choice([200, 300, 535])
         if type == 'stick':
             stick_1 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/stick_frame1.png').convert_alpha(),0.12)
             stick_2 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/stick_frame2.png').convert_alpha(),0.12)
             self.original_frames = [stick_1, stick_2]
             self.frames = self.original_frames.copy()
             self.stick_angle = 0
-            y_pos = 300
+            y_pos = 250
         if type == 'portal':
             portal_1 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/portal_frame1.png').convert_alpha(), 0.2)
             portal_2 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/portal_frame2.png').convert_alpha(), 0.2)
             self.frames = [portal_1, portal_2]
-            y_pos = 300
+            y_pos = random.choice([200, 300, 535])
 
         self.animation_index = 0
         self.image = self.frames[self.animation_index]
@@ -301,7 +302,7 @@ def show_gameover_screen(screen, gameover_screen):
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+            if event.type == pygame.KEYDOWN and event.key in (pygame.K_RETURN, pygame.K_SPACE):
                 waiting = False
 
     reset_game_state()
@@ -426,7 +427,7 @@ def reset_game_state():
 
     # Reset player state
     player.sprite.rect.midbottom = (200, 535)
-    player.sprite.sign = 0
+    player.sprite.sign = -1
     player.sprite.gravity = 0
     player.sprite.dead = False
     player.sprite.screenshake_done = False
@@ -490,7 +491,7 @@ ice_background_scaled = pygame.transform.scale(ice_background, (screen_width, sc
 
 # Timer
 obstacle_timer = pygame.USEREVENT + 1
-pygame.time.set_timer(obstacle_timer, 2500)
+pygame.time.set_timer(obstacle_timer, 1800)
 
 last_obstacle_time = 0
 
@@ -510,7 +511,7 @@ while True:
                 last_obstacle_time = pygame.time.get_ticks()
 
         else:
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
                 game_active = True
                 start_time = int(pygame.time.get_ticks() / 1000)
 
@@ -617,7 +618,7 @@ while True:
                         show_gameover_screen(screen, gameover_screen)
 
             elif collided_obstacle.type == 'transformer_up':
-                player.sprite.gravity = -20  # accelerate upward*
+                player.sprite.gravity = -40  # accelerate upward*
                 transformer_up_sound.play()  # put effect*
 
             elif collided_obstacle.type == 'transformer_down':
@@ -628,7 +629,7 @@ while True:
 
             elif collided_obstacle.type in ['fluxflip_horizontal', 'fluxflip_vertical']:
                 if collided_obstacle.type == 'fluxflip_vertical':
-                    player.sprite.gravity = -20  # Launch upward like a jump*
+                    player.sprite.gravity = -40  # Launch upward like a jump*
                     flux_sound = pygame.mixer.Sound('audio/fluxflip_vertical.wav')
                     flux_sound.set_volume(10)
                     flux_sound.play()
