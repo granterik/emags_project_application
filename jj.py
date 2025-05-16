@@ -454,6 +454,8 @@ def reset_game_state():
 pygame.init()
 screen = pygame.display.set_mode((1000, 700))
 pygame.display.set_caption('Joule Jump')
+icon = pygame.image.load('assets/icon/current_dude_icon.png').convert_alpha()
+pygame.display.set_icon(icon)
 clock = pygame.time.Clock()
 font = pygame.font.Font('fonts/pressstart2p.ttf',30)
 font_border = pygame.font.Font('fonts/pressstart2p.ttf',33)
