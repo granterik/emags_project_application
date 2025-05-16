@@ -7,7 +7,7 @@ from random import randint, choices
 import math
 
 main_menu_music = pygame.mixer.Sound('audio/main_menu_lumiere.mp3')
-game_over_music = pygame.mixer.Sound('audio/game_over_nightfall.mp3')
+game_over_music = pygame.mixer.Sound('audio/game_over_ghastly.mp3')
 
 class Player(pygame.sprite.Sprite):
     def __init__(self):
@@ -458,6 +458,8 @@ game_active = False
 screenshake_status = False
 attraction_status = False
 is_in_death_animation = False
+instruction_step = 0
+credits_screen = 0
 start_time = 0
 score = 0
 main_menu_music.play(loops=-1)
@@ -465,7 +467,7 @@ transformer_up_sound = pygame.mixer.Sound('audio/transformer_up.mp3')
 transformer_up_sound.set_volume(1)
 transformer_down_sound = pygame.mixer.Sound('audio/transformer_down.mp3')
 transformer_down_sound.set_volume(1)
-jj_title = pygame.image.load('assets/environment/title_screen.png').convert_alpha()
+jj_title = pygame.image.load('assets/environment/title_screen.png').convert()
 gameover_screen = pygame.image.load('assets/environment/game_over.png').convert()
 
 
@@ -494,6 +496,13 @@ fire_background = pygame.image.load('assets/environment/fire_bg.png').convert()
 fire_floor = pygame.image.load('assets/environment/fire_floor.png').convert()
 ice_background = pygame.image.load('assets/environment/ice_bg.png').convert()
 ice_floor = pygame.image.load('assets/environment/ice_floor.png').convert()
+
+instructions_1 = pygame.image.load('assets/environment/instructions_page1.png').convert()
+instructions_2 = pygame.image.load('assets/environment/instructions_page2.png').convert()
+instructions_3 = pygame.image.load('assets/environment/instructions_page3.png').convert()
+instructions_4 = pygame.image.load('assets/environment/instructions_page4.png').convert()
+instructions_5 = pygame.image.load('assets/environment/instructions_page5.png').convert()
+credits_1 = pygame.image.load('assets/environment/credits.png').convert()
 
 screen_width, screen_height = screen.get_size()
 fire_background_scaled = pygame.transform.scale(fire_background, (screen_width, screen_height))
@@ -524,9 +533,21 @@ while True:
             if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
                 main_menu_music.stop()
                 game_active = True
-                fight_ost_music = random.choice([pygame.mixer.Sound('audio/fight_ost1_gestralsummerparty.mp3'), pygame.mixer.Sound('audio/fight_ost2_inlumieresname.mp3')])
+                fight_ost_music = random.choice([pygame.mixer.Sound('audio/fight_ost1_gestralsummerparty.mp3'), pygame.mixer.Sound('audio/fight_ost2_inlumieresname.mp3'),
+                                                 pygame.mixer.Sound('audio/fight_ost3_megabot33.mp3'), pygame.mixer.Sound('audio/fight_ost4_volcanomines.mp3')])
                 fight_ost_music.play(loops=-1)
                 start_time = int(pygame.time.get_ticks() / 1000)
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_x:
+                instruction_step = 1
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_d and instruction_step > 0:
+                instruction_step = min(instruction_step + 1, 5)
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_a and instruction_step > 1:
+                instruction_step -= 1
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_c and credits_screen == 0:
+                credits_screen = 1
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                instruction_step = 0
+                credits_screen = 0
 
     if game_active:
         if current_zone == zone_fire:
@@ -677,6 +698,18 @@ while True:
 
     else:
         screen.blit(jj_title, (0,0))
+        if instruction_step == 1:
+            screen.blit(instructions_1, (0, 0))
+        elif instruction_step == 2:
+            screen.blit(instructions_2, (0, 0))
+        elif instruction_step == 3:
+            screen.blit(instructions_3, (0, 0))
+        elif instruction_step == 4:
+            screen.blit(instructions_4, (0, 0))
+        elif instruction_step == 5:
+            screen.blit(instructions_5, (0, 0))
+        elif credits_screen == 1:
+            screen.blit(credits_1, (0, 0))
 
 
         # score_message = test_font.render(f'Your score: {score}',False,(111,196,169))
