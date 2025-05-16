@@ -26,7 +26,7 @@ class Player(pygame.sprite.Sprite):
 
         self.jump_sound = pygame.mixer.Sound('audio/jump.mp3')
         self.jump_sound.set_volume(0.5)
-        self.velocity_x = 0  # horizontal velocity for fluxflip_horizontal*
+        self.velocity_x = 0
         self.velocity_y = 0
         self.dead = False
         self.screenshake_done = False
@@ -50,7 +50,7 @@ class Player(pygame.sprite.Sprite):
 
     def move_horizontal(self):
         self.rect.x += self.velocity_x
-        self.velocity_x *= 0.9  # friction to slow down*
+        self.velocity_x *= 0.9
 
     def animation_state(self):
         if self.rect.bottom < 535:
@@ -120,7 +120,7 @@ class Player(pygame.sprite.Sprite):
                 if self.sign == stick_polarity:
                     self.rect.x += int(dx * force_magnitude)
                     self.rect.y += int(dy * force_magnitude)
-                    # repulsion(screen, center=(player.sprite.rect.centerx, player.sprite.rect.centery))
+
                 else:
                     self.rect.x -= int(dx * force_magnitude)
                     self.rect.y -= int(dy * force_magnitude)
@@ -140,7 +140,7 @@ class Player(pygame.sprite.Sprite):
     def update(self):
         self.player_input()
         self.apply_gravity()
-        self.move_horizontal()  # added*
+        self.move_horizontal()
         self.animation_state()
         SCREEN_WIDTH, SCREEN_HEIGHT = screen.get_size()
         keys = pygame.key.get_pressed()
@@ -249,10 +249,8 @@ class Obstacle(pygame.sprite.Sprite):
             self.frames = [pygame.transform.rotate(img, self.stick_angle) for img in self.original_frames]
             self.image = self.frames[int(self.animation_index)]
 
-            # Move left like other obstacles
             self.rect.x -= 4
 
-            # Keep rotation center aligned as it moves
             self.rect = self.image.get_rect(center=self.rect.center)
         else:
             self.rect.x -= 6
@@ -265,9 +263,14 @@ class Obstacle(pygame.sprite.Sprite):
 
 def display_score():
     current_time = int(pygame.time.get_ticks() / 1000) - start_time
-    # score_surf = test_font.render(f'Score: {current_time}',False,(64,64,64))
-    # score_rect = score_surf.get_rect(center = (400,50))
-    # screen.blit(score_surf,score_rect)
+    score_surf_border = font_border.render(f'Score: {current_time}', False, (0, 0, 0))
+    score_rect_border = score_surf_border.get_rect(center=(200, 50))
+    score_surf = font.render(f'Score: {current_time}', False, (255, 255, 255))
+    score_rect = score_surf.get_rect(center=(200, 50))
+
+    screen.blit(score_surf_border, score_rect_border)
+    screen.blit(score_surf, score_rect)
+
     return current_time
 
 def collision_sprite():
@@ -302,6 +305,11 @@ def show_gameover_screen(screen, gameover_screen):
     game_over_music.play(loops=-1)
 
     screen.blit(gameover_screen, (0, 0))
+
+    score_message = font.render(f'Your score: {score}', False, (255, 255, 255))
+    score_message_rect = score_message.get_rect(center=(500, 600))
+    screen.blit(score_message, score_message_rect)
+
     pygame.display.flip()
 
     waiting = True
@@ -391,20 +399,19 @@ def draw_haze(screen, haze_data):
 def repulsion(screen, center, burst_count=5, max_radius=60, color=(255, 60, 60), thickness=2):
     for i in range(burst_count):
         radius = int((i + 1) * max_radius / burst_count)
-        alpha = max(0, 255 - i * 40)  # Fade out over distance
+        alpha = max(0, 255 - i * 40)
 
-        # Create a transparent surface for the burst
         burst_surface = pygame.Surface((screen.get_width(), screen.get_height()), pygame.SRCALPHA)
         pygame.draw.circle(burst_surface, (*color, alpha), center, radius, thickness)
         screen.blit(burst_surface, (0, 0))
 
         pygame.display.update()
-        pygame.time.delay(30)  # Adjust for speed of repulsion
+        pygame.time.delay(30)
 
 def attraction(screen, center, arrow_count=8, length=40, color=(120, 255, 120), speed=5):
     arrow_surface = pygame.Surface(screen.get_size(), pygame.SRCALPHA)
     for frame in range(length // speed):
-        arrow_surface.fill((0, 0, 0, 0))  # Clear the surface
+        arrow_surface.fill((0, 0, 0, 0))
 
         for i in range(arrow_count):
             angle = (2 * math.pi / arrow_count) * i
@@ -415,7 +422,6 @@ def attraction(screen, center, arrow_count=8, length=40, color=(120, 255, 120), 
             end = (center[0], center[1])
             pygame.draw.line(arrow_surface, color, (x, y), end, 2)
 
-            # Optional arrowhead
             head_size = 6
             dx = center[0] - x
             dy = center[1] - y
@@ -433,27 +439,24 @@ def attraction(screen, center, arrow_count=8, length=40, color=(120, 255, 120), 
 def reset_game_state():
     global current_zone
 
-    # Reset zone to fire
     current_zone = 'fire'
 
-    # Reset player state
     player.sprite.rect.midbottom = (200, 535)
     player.sprite.sign = -1
     player.sprite.gravity = 0
     player.sprite.dead = False
     player.sprite.screenshake_done = False
 
-    # Reset obstacle group
     obstacle_group.empty()
 
-    # Reset time
     return pygame.time.get_ticks()
 
 pygame.init()
 screen = pygame.display.set_mode((1000, 700))
 pygame.display.set_caption('Joule Jump')
 clock = pygame.time.Clock()
-# test_font = pygame.fme.time.Clockont.Font('font/Pixeltype.ttf', 50)
+font = pygame.font.Font('fonts/pressstart2p.ttf',30)
+font_border = pygame.font.Font('fonts/pressstart2p.ttf',33)
 game_active = False
 screenshake_status = False
 attraction_status = False
@@ -488,7 +491,7 @@ zone_ice = 'ice'
 fire_obstacles = ['coil_short', 'openswitch', 'resistor', 'transformer_up', 'transformer_down', 'portal']
 fire_weights = [2, 2, 2, 2, 2, 1]
 ice_obstacles = ['fluxflip_vertical', 'fluxflip_horizontal', 'roundabout', 'signswitcher', 'stick', 'portal']
-ice_weights = [2, 2, 2, 2, 2, 1]
+ice_weights = [2, 2, 2, 2, 1, 1]
 
 current_zone = zone_fire
 
@@ -508,7 +511,6 @@ screen_width, screen_height = screen.get_size()
 fire_background_scaled = pygame.transform.scale(fire_background, (screen_width, screen_height))
 ice_background_scaled = pygame.transform.scale(ice_background, (screen_width, screen_height))
 
-# Timer
 obstacle_timer = pygame.USEREVENT + 1
 pygame.time.set_timer(obstacle_timer, 1800)
 
@@ -590,14 +592,13 @@ while True:
 
                     if pygame.time.get_ticks() - obstacle_group.slow_effect_timer >= 2000:
                         obstacle_group.slow_effect_active = False
-                        Obstacle.update = original_update  # restore normal speed
+                        Obstacle.update = original_update
 
                 Obstacle.update = slowed_update
 
             elif collided_obstacle.type == 'openswitch':
-                player.sprite.gravity = 22  # still affects the player
+                player.sprite.gravity = 22
 
-                # Bright fog-like overlay (light yellowish fog)
                 fog_surface = pygame.Surface((screen_width, screen_height))
                 fog_surface.fill((255, 255, 210))
                 fog_surface.set_alpha(180)
@@ -609,26 +610,22 @@ while True:
                     offset = (randint(-50, 50), segment_len)
                     end = (start[0] + offset[0], start[1] + offset[1])
 
-                    # White-hot lightning core
                     pygame.draw.line(surface, (255, 255, 255), start, end, thickness + 2)
-                    # Yellow outer glow
                     pygame.draw.line(surface, (255, 255, 120), start, end, thickness)
 
                     draw_foggy_lightning(surface, end, depth - 1, thickness)
 
                 for i in range(6):
-                    # Slightly heavier shake
                     offset = (randint(-12, 12), randint(-10, 10))
                     screen.blit(fog_surface, offset)
 
-                    # Multiple large, fog-cutting bolts
                     for _ in range(4):
                         start_x = randint(200, 800)
                         draw_foggy_lightning(screen, (start_x, 0), depth=5, thickness=4)
 
                     pygame.display.update()
                     pygame.time.delay(40)
-                    screen.fill((40, 40, 40))  # Slight smoky black background
+                    screen.fill((40, 40, 40))
                     screenshake(screen, player, obstacle_group, current_zone, intensity=5, duration=10)
 
                 pygame.time.set_timer(pygame.USEREVENT + 2, 1000, loops=1)
@@ -651,23 +648,23 @@ while True:
                         show_gameover_screen(screen, gameover_screen)
 
             elif collided_obstacle.type == 'transformer_up':
-                player.sprite.gravity = -40  # accelerate upward*
-                transformer_up_sound.play()  # put effect*
+                player.sprite.gravity = -40
+                transformer_up_sound.play()
 
             elif collided_obstacle.type == 'transformer_down':
-                player.sprite.gravity += 15  # accelerate downward*
-                transformer_down_sound.play()  # put effect*
-                # Apply screenshake based on current zone*
+                player.sprite.gravity += 15
+                transformer_down_sound.play()
+
                 screenshake(screen, player, obstacle_group, current_zone, intensity=5, duration=10)
 
             elif collided_obstacle.type in ['fluxflip_horizontal', 'fluxflip_vertical']:
                 if collided_obstacle.type == 'fluxflip_vertical':
-                    player.sprite.gravity = -40  # Launch upward like a jump*
+                    player.sprite.gravity = -40
                     flux_sound = pygame.mixer.Sound('audio/fluxflip_vertical.wav')
                     flux_sound.set_volume(10)
                     flux_sound.play()
                 elif collided_obstacle.type == 'fluxflip_horizontal':
-                    player.sprite.velocity_x = 15  # Push player rightward
+                    player.sprite.velocity_x = 15
                     fluxflip_horizontal_sound = pygame.mixer.Sound('audio/fluxflip_horizontal.wav')
                     fluxflip_horizontal_sound.set_volume(10)
                     fluxflip_horizontal_sound.play()
@@ -711,16 +708,5 @@ while True:
         elif credits_screen == 1:
             screen.blit(credits_1, (0, 0))
 
-
-        # score_message = test_font.render(f'Your score: {score}',False,(111,196,169))
-        # score_message_rect = score_message.get_rect(center = (400,330))
-        # screen.blit(game_name,game_name_rect)
-
-        # if score == 0: screen.blit(game_message,game_message_rect)
-        # else: screen.blit(score_message,score_message_rect)
-
     pygame.display.update()
     clock.tick(60)
-
-
-
