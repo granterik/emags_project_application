@@ -7,7 +7,7 @@ from random import randint, choices
 import math
 
 main_menu_music = pygame.mixer.Sound('audio/main_menu_lumiere.mp3')
-game_over_music = pygame.mixer.Sound('audio/game_over_nightfall.mp3')
+game_over_music = pygame.mixer.Sound('audio/game_over_ghastly.mp3')
 
 class Player(pygame.sprite.Sprite):
     def __init__(self):
@@ -533,7 +533,8 @@ while True:
             if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
                 main_menu_music.stop()
                 game_active = True
-                fight_ost_music = random.choice([pygame.mixer.Sound('audio/fight_ost1_gestralsummerparty.mp3'), pygame.mixer.Sound('audio/fight_ost2_inlumieresname.mp3')])
+                fight_ost_music = random.choice([pygame.mixer.Sound('audio/fight_ost1_gestralsummerparty.mp3'), pygame.mixer.Sound('audio/fight_ost2_inlumieresname.mp3'),
+                                                 pygame.mixer.Sound('audio/fight_ost3_megabot33.mp3'), pygame.mixer.Sound('audio/fight_ost4_volcanomines.mp3')])
                 fight_ost_music.play(loops=-1)
                 start_time = int(pygame.time.get_ticks() / 1000)
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_x:
