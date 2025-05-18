@@ -1,4 +1,4 @@
-('C:\\Users\\Grant\\Documents\\Code\\emags_project_application\\build\\joule_jump\\PYZ-00.pyz',
+('C:\\Users\\Grant\\Desktop\\Joule_Jump\\build\\joule_jump\\PYZ-00.pyz',
  [('__future__',
    'C:\\Users\\Grant\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\__future__.py',
    'PYMODULE'),

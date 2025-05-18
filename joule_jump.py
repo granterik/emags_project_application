@@ -8,25 +8,32 @@ from sys import exit
 from random import randint, choices
 import math
 
-main_menu_music = pygame.mixer.Sound('audio/main_menu_lumiere.mp3')
-game_over_music = pygame.mixer.Sound('audio/game_over_ghastly.mp3')
+def resource_path(relative_path):
+    try:
+        base_path = sys._MEIPASS
+    except AttributeError:
+        base_path = os.path.abspath(".")
+    return os.path.join(base_path, relative_path)
+
+main_menu_music = pygame.mixer.Sound(resource_path('assets/audio/main_menu_lumiere.mp3'))
+game_over_music = pygame.mixer.Sound(resource_path('assets/audio/game_over_ghastly.mp3'))
 
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        player_walk_1 = pygame.transform.scale_by(pygame.image.load('assets/player/player_frame1.png').convert_alpha(),0.2)
-        player_walk_2 = pygame.transform.scale_by(pygame.image.load('assets/player/player_frame2.png').convert_alpha(),0.2)
-        player_walk_3 = pygame.transform.scale_by(pygame.image.load('assets/player/player_frame3.png').convert_alpha(),0.2)
+        player_walk_1 = pygame.transform.scale_by(pygame.image.load(resource_path('assets/graphics/player/player_frame1.png')).convert_alpha(),0.2)
+        player_walk_2 = pygame.transform.scale_by(pygame.image.load(resource_path('assets/graphics/player/player_frame2.png')).convert_alpha(),0.2)
+        player_walk_3 = pygame.transform.scale_by(pygame.image.load(resource_path('assets/graphics/player/player_frame3.png')).convert_alpha(),0.2)
         self.player_walk = [player_walk_1, player_walk_2, player_walk_3]
         self.player_index = 0
-        self.player_jump = pygame.transform.scale_by(pygame.image.load('assets/player/player_jump_frame1.png').convert_alpha(), 0.2)
+        self.player_jump = pygame.transform.scale_by(pygame.image.load(resource_path('assets/graphics/player/player_jump_frame1.png')).convert_alpha(), 0.2)
 
         self.image = self.player_walk[self.player_index]
         self.rect = self.image.get_rect(midbottom=(200, 535))
         self.gravity = 0
         self.speed = 5
 
-        self.jump_sound = pygame.mixer.Sound('audio/jump.mp3')
+        self.jump_sound = pygame.mixer.Sound(resource_path('assets/audio/jump.mp3'))
         self.jump_sound.set_volume(0.5)
         self.velocity_x = 0
         self.velocity_y = 0
@@ -35,7 +42,7 @@ class Player(pygame.sprite.Sprite):
         self.death_timer = 0
 
         self.sign = 1
-        self.switch_sound = pygame.mixer.Sound('audio/signswitcher.mp3')
+        self.switch_sound = pygame.mixer.Sound(resource_path('assets/audio/signswitcher.mp3'))
         self.switch_sound.set_volume(0.9)
 
     def player_input(self):
@@ -174,60 +181,60 @@ class Obstacle(pygame.sprite.Sprite):
         self.velocity_y = 0
 
         if type == 'coil_short':
-            coil_short_1 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/coil_short_frame1.png').convert_alpha(), 0.28)
-            coil_short_2 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/coil_short_frame2.png').convert_alpha(), 0.28)
+            coil_short_1 = pygame.transform.scale_by(pygame.image.load(resource_path('assets/graphics/obstacles/coil_short_frame1.png')).convert_alpha(), 0.28)
+            coil_short_2 = pygame.transform.scale_by(pygame.image.load(resource_path('assets/graphics/obstacles/coil_short_frame2.png')).convert_alpha(), 0.28)
             self.frames = [coil_short_1, coil_short_2]
             y_pos = 535
         if type == 'openswitch':
-            openswitch_1 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/openswitch_frame1.png').convert_alpha(), 0.25)
-            openswitch_2 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/openswitch_frame2.png').convert_alpha(), 0.25)
+            openswitch_1 = pygame.transform.scale_by(pygame.image.load(resource_path('assets/graphics/obstacles/openswitch_frame1.png')).convert_alpha(), 0.25)
+            openswitch_2 = pygame.transform.scale_by(pygame.image.load(resource_path('assets/graphics/obstacles/openswitch_frame2.png')).convert_alpha(), 0.25)
             self.frames = [openswitch_1, openswitch_2]
             y_pos = 535
         if type == 'resistor':
-            resistor_1 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/resistor_frame1.png').convert_alpha(), 0.2)
-            resistor_2 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/resistor_frame2.png').convert_alpha(), 0.2)
+            resistor_1 = pygame.transform.scale_by(pygame.image.load(resource_path('assets/graphics/obstacles/resistor_frame1.png')).convert_alpha(), 0.2)
+            resistor_2 = pygame.transform.scale_by(pygame.image.load(resource_path('assets/graphics/obstacles/resistor_frame2.png')).convert_alpha(), 0.2)
             self.frames = [resistor_1, resistor_2]
             y_pos = random.choice([200, 300])
         if type == 'transformer_up':
-            transformer_up_1 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/transformer_up_frame1.png').convert_alpha(), 0.2)
-            transformer_up_2 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/transformer_up_frame2.png').convert_alpha(), 0.2)
+            transformer_up_1 = pygame.transform.scale_by(pygame.image.load(resource_path('assets/graphics/obstacles/transformer_up_frame1.png')).convert_alpha(), 0.2)
+            transformer_up_2 = pygame.transform.scale_by(pygame.image.load(resource_path('assets/graphics/obstacles/transformer_up_frame2.png')).convert_alpha(), 0.2)
             self.frames = [transformer_up_1, transformer_up_2]
             y_pos = random.choice([300, 535])
         if type == 'transformer_down':
-            transformer_down_1 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/transformer_down_frame1.png').convert_alpha(), 0.2)
-            transformer_down_2 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/transformer_down_frame2.png').convert_alpha(), 0.2)
+            transformer_down_1 = pygame.transform.scale_by(pygame.image.load(resource_path('assets/graphics/obstacles/transformer_down_frame1.png')).convert_alpha(), 0.2)
+            transformer_down_2 = pygame.transform.scale_by(pygame.image.load(resource_path('assets/graphics/obstacles/transformer_down_frame2.png')).convert_alpha(), 0.2)
             self.frames = [transformer_down_1, transformer_down_2]
             y_pos = random.choice([200, 300])
         if type == 'fluxflip_vertical':
-            fluxflip_vertical_1 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/fluxflip_vertical_frame1.png').convert_alpha(), 0.2)
-            fluxflip_vertical_2 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/fluxflip_vertical_frame2.png').convert_alpha(), 0.2)
+            fluxflip_vertical_1 = pygame.transform.scale_by(pygame.image.load(resource_path('assets/graphics/obstacles/fluxflip_vertical_frame1.png')).convert_alpha(), 0.2)
+            fluxflip_vertical_2 = pygame.transform.scale_by(pygame.image.load(resource_path('assets/graphics/obstacles/fluxflip_vertical_frame2.png')).convert_alpha(), 0.2)
             self.frames = [fluxflip_vertical_1, fluxflip_vertical_2]
             y_pos = random.choice([300, 535])
         if type == 'fluxflip_horizontal':
-            fluxflip_horizontal_1 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/fluxflip_horizontal_frame1.png').convert_alpha(), 0.2)
-            fluxflip_horizontal_2 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/fluxflip_horizontal_frame2.png').convert_alpha(), 0.2)
+            fluxflip_horizontal_1 = pygame.transform.scale_by(pygame.image.load(resource_path('assets/graphics/obstacles/fluxflip_horizontal_frame1.png')).convert_alpha(), 0.2)
+            fluxflip_horizontal_2 = pygame.transform.scale_by(pygame.image.load(resource_path('assets/graphics/obstacles/fluxflip_horizontal_frame2.png')).convert_alpha(), 0.2)
             self.frames = [fluxflip_horizontal_1, fluxflip_horizontal_2]
             y_pos = random.choice([200, 300, 535])
         if type == 'roundabout':
-            roundabout_1 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/roundabout_frame1.png').convert_alpha(), 0.18)
-            roundabout_2 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/roundabout_frame2.png').convert_alpha(), 0.18)
+            roundabout_1 = pygame.transform.scale_by(pygame.image.load(resource_path('assets/graphics/obstacles/roundabout_frame1.png')).convert_alpha(), 0.18)
+            roundabout_2 = pygame.transform.scale_by(pygame.image.load(resource_path('assets/graphics/obstacles/roundabout_frame2.png')).convert_alpha(), 0.18)
             self.frames = [roundabout_1, roundabout_2]
             y_pos = random.choice([300, 535])
         if type == 'signswitcher':
-            signswitcher_1 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/signswitcher_frame1.png').convert_alpha(), 0.2)
-            signswitcher_2 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/signswitcher_frame2.png').convert_alpha(), 0.2)
+            signswitcher_1 = pygame.transform.scale_by(pygame.image.load(resource_path('assets/graphics/obstacles/signswitcher_frame1.png')).convert_alpha(), 0.2)
+            signswitcher_2 = pygame.transform.scale_by(pygame.image.load(resource_path('assets/graphics/obstacles/signswitcher_frame2.png')).convert_alpha(), 0.2)
             self.frames = [signswitcher_1, signswitcher_2]
             y_pos = random.choice([200, 300, 535])
         if type == 'stick':
-            stick_1 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/stick_frame1.png').convert_alpha(),0.12)
-            stick_2 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/stick_frame2.png').convert_alpha(),0.12)
+            stick_1 = pygame.transform.scale_by(pygame.image.load(resource_path('assets/graphics/obstacles/stick_frame1.png')).convert_alpha(),0.12)
+            stick_2 = pygame.transform.scale_by(pygame.image.load(resource_path('assets/graphics/obstacles/stick_frame2.png')).convert_alpha(),0.12)
             self.original_frames = [stick_1, stick_2]
             self.frames = self.original_frames.copy()
             self.stick_angle = 0
             y_pos = 250
         if type == 'portal':
-            portal_1 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/portal_frame1.png').convert_alpha(), 0.2)
-            portal_2 = pygame.transform.scale_by(pygame.image.load('assets/obstacles/portal_frame2.png').convert_alpha(), 0.2)
+            portal_1 = pygame.transform.scale_by(pygame.image.load(resource_path('assets/graphics/obstacles/portal_frame1.png')).convert_alpha(), 0.2)
+            portal_2 = pygame.transform.scale_by(pygame.image.load(resource_path('assets/graphics/obstacles/portal_frame2.png')).convert_alpha(), 0.2)
             self.frames = [portal_1, portal_2]
             y_pos = random.choice([200, 300, 535])
 
@@ -456,11 +463,11 @@ def reset_game_state():
 pygame.init()
 screen = pygame.display.set_mode((1000, 700))
 pygame.display.set_caption('Joule Jump')
-icon = pygame.image.load('assets/icon/current_dude_icon.png').convert_alpha()
+icon = pygame.image.load(resource_path('assets/graphics/icon/current_dude_icon.png')).convert_alpha()
 pygame.display.set_icon(icon)
 clock = pygame.time.Clock()
-font = pygame.font.Font('fonts/pressstart2p.ttf',30)
-font_border = pygame.font.Font('fonts/pressstart2p.ttf',33)
+font = pygame.font.Font(resource_path('assets/fonts/pressstart2p.ttf'),30)
+font_border = pygame.font.Font(resource_path('assets/fonts/pressstart2p.ttf'),33)
 game_active = False
 screenshake_status = False
 attraction_status = False
@@ -470,12 +477,12 @@ credits_screen = 0
 start_time = 0
 score = 0
 main_menu_music.play(loops=-1)
-transformer_up_sound = pygame.mixer.Sound('audio/transformer_up.mp3')
+transformer_up_sound = pygame.mixer.Sound(resource_path('assets/audio/transformer_up.mp3'))
 transformer_up_sound.set_volume(1)
-transformer_down_sound = pygame.mixer.Sound('audio/transformer_down.mp3')
+transformer_down_sound = pygame.mixer.Sound(resource_path('assets/audio/transformer_down.mp3'))
 transformer_down_sound.set_volume(1)
-jj_title = pygame.image.load('assets/environment/title_screen.png').convert()
-gameover_screen = pygame.image.load('assets/environment/game_over.png').convert()
+jj_title = pygame.image.load(resource_path('assets/graphics/environment/title_screen.png')).convert()
+gameover_screen = pygame.image.load(resource_path('assets/graphics/environment/game_over.png')).convert()
 
 
 player = pygame.sprite.GroupSingle()
@@ -484,8 +491,8 @@ player.add(Player())
 obstacle_group = pygame.sprite.Group()
 
 player.sprite.sign *= -1
-sign1_img = pygame.image.load('assets/obstacles/possign.png').convert_alpha()
-sign2_img = pygame.image.load('assets/obstacles/negsign.png').convert_alpha()
+sign1_img = pygame.image.load(resource_path('assets/graphics/obstacles/possign.png')).convert_alpha()
+sign2_img = pygame.image.load(resource_path('assets/graphics/obstacles/negsign.png')).convert_alpha()
 sign1_img = pygame.transform.scale(sign1_img, (400, 200))
 sign2_img = pygame.transform.scale(sign2_img, (400, 200))
 
@@ -499,17 +506,17 @@ ice_weights = [2, 2, 2, 2, 1, 1]
 
 current_zone = zone_fire
 
-fire_background = pygame.image.load('assets/environment/fire_bg.png').convert()
-fire_floor = pygame.image.load('assets/environment/fire_floor.png').convert()
-ice_background = pygame.image.load('assets/environment/ice_bg.png').convert()
-ice_floor = pygame.image.load('assets/environment/ice_floor.png').convert()
+fire_background = pygame.image.load(resource_path('assets/graphics/environment/fire_bg.png')).convert()
+fire_floor = pygame.image.load(resource_path('assets/graphics/environment/fire_floor.png')).convert()
+ice_background = pygame.image.load(resource_path('assets/graphics/environment/ice_bg.png')).convert()
+ice_floor = pygame.image.load(resource_path('assets/graphics/environment/ice_floor.png')).convert()
 
-instructions_1 = pygame.image.load('assets/environment/instructions_page1.png').convert()
-instructions_2 = pygame.image.load('assets/environment/instructions_page2.png').convert()
-instructions_3 = pygame.image.load('assets/environment/instructions_page3.png').convert()
-instructions_4 = pygame.image.load('assets/environment/instructions_page4.png').convert()
-instructions_5 = pygame.image.load('assets/environment/instructions_page5.png').convert()
-credits_1 = pygame.image.load('assets/environment/credits.png').convert()
+instructions_1 = pygame.image.load(resource_path('assets/graphics/environment/instructions_page1.png')).convert()
+instructions_2 = pygame.image.load(resource_path('assets/graphics/environment/instructions_page2.png')).convert()
+instructions_3 = pygame.image.load(resource_path('assets/graphics/environment/instructions_page3.png')).convert()
+instructions_4 = pygame.image.load(resource_path('assets/graphics/environment/instructions_page4.png')).convert()
+instructions_5 = pygame.image.load(resource_path('assets/graphics/environment/instructions_page5.png')).convert()
+credits_1 = pygame.image.load(resource_path('assets/graphics/environment/credits.png')).convert()
 
 screen_width, screen_height = screen.get_size()
 fire_background_scaled = pygame.transform.scale(fire_background, (screen_width, screen_height))
@@ -539,8 +546,8 @@ while True:
             if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
                 main_menu_music.stop()
                 game_active = True
-                fight_ost_music = random.choice([pygame.mixer.Sound('audio/fight_ost1_gestralsummerparty.mp3'), pygame.mixer.Sound('audio/fight_ost2_inlumieresname.mp3'),
-                                                 pygame.mixer.Sound('audio/fight_ost3_megabot33.mp3'), pygame.mixer.Sound('audio/fight_ost4_volcanomines.mp3')])
+                fight_ost_music = random.choice([pygame.mixer.Sound(resource_path('assets/audio/fight_ost1_gestralsummerparty.mp3')), pygame.mixer.Sound(resource_path('assets/audio/fight_ost2_inlumieresname.mp3')),
+                                                 pygame.mixer.Sound(resource_path('assets/audio/fight_ost3_megabot33.mp3')), pygame.mixer.Sound(resource_path('assets/audio/fight_ost4_volcanomines.mp3'))])
                 fight_ost_music.play(loops=-1)
                 start_time = int(pygame.time.get_ticks() / 1000)
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_x:
@@ -664,12 +671,12 @@ while True:
             elif collided_obstacle.type in ['fluxflip_horizontal', 'fluxflip_vertical']:
                 if collided_obstacle.type == 'fluxflip_vertical':
                     player.sprite.gravity = -40
-                    flux_sound = pygame.mixer.Sound('audio/fluxflip_vertical.wav')
+                    flux_sound = pygame.mixer.Sound(resource_path('assets/audio/fluxflip_vertical.wav'))
                     flux_sound.set_volume(10)
                     flux_sound.play()
                 elif collided_obstacle.type == 'fluxflip_horizontal':
                     player.sprite.velocity_x = 15
-                    fluxflip_horizontal_sound = pygame.mixer.Sound('audio/fluxflip_horizontal.wav')
+                    fluxflip_horizontal_sound = pygame.mixer.Sound(resource_path('assets/audio/fluxflip_horizontal.wav'))
                     fluxflip_horizontal_sound.set_volume(10)
                     fluxflip_horizontal_sound.play()
 
