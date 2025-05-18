@@ -1,0 +1,5 @@
+To run Joule Jump, just double click the 'joule_jump.exe'.
+
+If error persists, you may run the game by running it through PyCharm by double clicking 'joule_jump.py'.
+
+Enjoy! :)
